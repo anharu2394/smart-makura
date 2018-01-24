@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p class="set_at">アラーム時刻:<%= @set_at%></p>
+<%= link_to 'アラーム時間を設定', edit_user_path(1),class: "set_link" %>
+<h1>睡眠記録</h1>
+
+
+    <% @sleep_data.each do |sleep_datum| %>
+    <div class="card">
+      <div class="card-content">
+        <h1  class="card-title"><%= sleep_datum.created_at.month.to_s + "月" + sleep_datum.created_at.day.to_s+ "日"%>の睡眠</h1>
+        <div class="progress"  style="height: 30px;">
+          <div class="progress-bar progress-bar-striped bg-warning pro-bar" role="progressbar" style="width: <%= ((sleep_datum.finished_at.to_f - sleep_datum.created_at.to_time.to_f) /60 /60 / 12 * 100).to_i %>%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">睡眠時間：<%= ((sleep_datum.finished_at.to_i - sleep_datum.created_at.to_time.to_i) /60 /60).to_s + "時間" + ((sleep_datum.finished_at.to_i - sleep_datum.created_at.to_time.to_i) /60 %60).to_s + "分"  if sleep_datum.finished_at  %></div>
+        </div>
+        <div class="start_t" style="float:left;">
+          <p>寝た時間</p>
+          <p class="time"><%= sleep_datum.created_at.strftime("%H時%M分") %></p>
+        </div>
+        <div class="finish_t" style="float:left;">
+          <p> 起きた時間</p>
+          <p class="time"><%= sleep_datum.finished_at.strftime("%H時%M分") if sleep_datum.finished_at %></p>
+        </div>
+          <p style="clear: both;"> セットした時間：<%= sleep_datum.set_at.strftime("%H時%M分") %></p>
+      </div>
+      <div class="card-link">
+        <%= link_to 'Show', sleep_datum %>
+        <%= link_to 'Edit', edit_sleep_datum_path(sleep_datum) %>
+        <%= link_to 'Destroy', sleep_datum, method: :delete, data: { confirm: 'Are you sure?' } %>
+      </div>
+    </div>
+    <% end %>
+
+<br>
+
+<%= link_to 'New Sleep Datum', new_sleep_datum_path %>

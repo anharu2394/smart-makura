@@ -1,0 +1,2 @@
+class SleepDatum < ApplicationRecord
+end

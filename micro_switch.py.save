@@ -1,0 +1,106 @@
+import RPi.GPIO as GPIO
+import time
+from time import sleep
+import sqlite3
+from datetime import datetime
+from beebotte import *
+_accesskey  = 'fbabe9a5aa4d947d18b57a3e0296d724'
+_secretkey  = '6421321cf8711279d041076edf1d737977a62a7792ffa9e0473fc5827128a536'
+_hostname   = 'api.beebotte.com'
+bbt = BBT( _accesskey, _secretkey, hostname = _hostname)
+
+dbname = './db/development.sqlite3'
+con = sqlite3.connect(dbname)
+cur = con.cursor()
+sql = "select * from sleep_data"
+cur.execute(sql)
+for row in cur:
+    print row[0], row[1]
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(4,GPIO.IN)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17,GPIO.IN)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(27,GPIO.IN)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(22,GPIO.IN)
+
+def write_start:
+    sleep_datum = ()
+    c.execute('insert into sleep_data (set_at) values (?)', sleep_datum)
+def measure_time(s_t,pin):
+    print("OK")
+    end_t = time.time()
+    h_or_l = GPIO.input(pin)
+    if h_or_l == GPIO.LOW:
+        return 1
+    if end_t - s_t > 5:
+        return 2
+    return 0
+def is_sleep():
+    while True: 
+        num1 = GPIO.input(22)
+        num2 = GPIO.input(27)
+        num3 = GPIO.input(17)
+        num4 = GPIO.input(4)
+        print(num1)
+        print(num2)
+        print(num3)
+        print(num4)
+        print("----")
+        start_t = time.time()
+        while num1 == GPIO.HIGH:
+            if measure_time(start_t,22) == 1:
+                break
+            elif measure_time(start_t,22) == 2:
+                print("OVERAAA")
+                bbt.publish("smart_makura", "is_start", True)
+                sleeping()
+                break
+        print("finish")
+def sleeping():
+    now = datetime.now()
+    set_time = [12,28]
+    if now.hour - set_time[0] > 0:
+        bef_time = 24 * 60 - now.hour * 60 + now.minute
+	aft_time = set_time[0] * 60 + set_time[1]
+	ring_time = bef_time + aft_time
+    elif now.hour == set_time[0] and now.minute > set_time[1]:
+        bef_time = 24 * 60 - now.hour * 60 + now.minute
+        aft_time = set_time[0] * 60 + set_time[1]
+        ring_time = bef_time + aft_time
+    else:
+       ring_time = set_time[0] * 60 + set_time[1] - (now.hour * 60 + now.minute)
+    pass_time = 0
+    while not pass_time == ring_time:
+       print("now:" +str(now.hour)+","+ str(now.minute))
+       print("ringtime:"+ str(ring_time))
+       print("passtime:"+ str(pass_time))
+       sleep(60)
+       pass_time += 1
+       print("pass 1")
+    print("Good Morning!!!!")
+
+while True:
+    num1 = GPIO.input(22)
+    num2 = GPIO.input(27)
+    num3 = GPIO.input(17)
+    num4 = GPIO.input(4)
+    print(num1)
+    print(num2)
+    print(num3)
+    print(num4)
+    print("----")
+    start_t = time.time()
+    while num1 == GPIO.HIGH:
+        if measure_time(start_t,22) == 1:
+            break
+        elif measure_time(start_t,22) == 2:
+            print("OVERAAA")
+            bbt.publish("smart_makura", "is_start", True)
+	    sleeping()
+            break
+    print("finish")
+    time.sleep(1)
+GPIO.cleanup()

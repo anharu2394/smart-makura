@@ -1,0 +1,68 @@
+// Place all the styles related to the sleep_data controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+h1,p,a{
+	text-align: center;
+}
+a:hover{
+	background:#fff;
+}
+.card {
+  width: 50%;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px #ccc;
+  margin: auto;
+  margin-top: 30px;
+
+}
+.card-img {
+  border-radius: 5px 5px 0 0;
+  max-width: 100%;
+  height: auto;
+}
+.card-content {
+  padding: 20px;
+}
+.card-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+.card-text {
+  color: #777;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.card-link {
+  text-align: center;
+  border-top: 1px solid #eee;
+  padding: 20px;
+}
+.card-link a {
+  text-decoration: none;
+  color: #0bd;
+  margin: 0 10px;
+}
+.card-link a:hover {
+  color: #0090aa;
+}
+.set_at{
+	font-size: 30px;
+}
+.set_link{
+	display : block;
+	font-size: 20px;
+	text-align: center;
+	margin-bottom: 40px;
+}
+.start_t{
+	width:50%;
+}
+.finish_t{
+	width:50%;
+}
+.time{
+	font-size: 30px;
+}

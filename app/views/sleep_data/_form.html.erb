@@ -1,0 +1,27 @@
+<%= form_with(model: sleep_datum, local: true) do |form| %>
+  <% if sleep_datum.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(sleep_datum.errors.count, "error") %> prohibited this sleep_datum from being saved:</h2>
+
+      <ul>
+      <% sleep_datum.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :finished_at %>
+    <%= form.datetime_select :finished_at, id: :sleep_datum_finished_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :set_at %>
+    <%= form.datetime_select :set_at, id: :sleep_datum_set_at %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "New",class: "btn btn-primary" %>
+  </div>
+<% end %>
