@@ -4,6 +4,7 @@ import sqlite3
 import requests
 import json
 import pygame.mixer
+from pytz import timezone
 from datetime import datetime
 from beebotte import *
 _accesskey  = 'fbabe9a5aa4d947d18b57a3e0296d724'
@@ -44,26 +45,30 @@ def measure_time(s_t,pin):
 def write_start():
     response = requests.get('http://localhost:3000/users/1.json').text
     json_data = json.loads(response)
-    sleep_datum = (None,str(json_data["set_hour"]) + ":" +str(json_data["set_min"]),datetime.now().astimezone(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S"),datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    set_at = timezone('Asia/Tokyo').localize(datetime(2016, 1, 1,json_data["set_hour"],json_data["set_min"]))
+    sleep_datum = (None,set_at,datetime.now(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S"),datetime.now(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S"))
     sql = 'insert into sleep_data (finished_at,set_at,created_at,updated_at) values (?,?,?,?)'
     cur.execute(sql,sleep_datum)
     con.commit()
-    return datetime.now().astimezone(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S")
 def write_finish(created_at):
-    sql = "UPDATE sleep_data SET finished_at = '{0}' WHERE created_at = '{1}' ;".format(datetime.now().astimezone(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S"),str(created_at))
+    print ("will write table")
+    sql = "UPDATE sleep_data SET finished_at = '{0}' WHERE created_at = '{1}' ;".format(datetime.now(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S"),str(created_at))
     print(sql)
     cur.execute(sql)
     con.commit()
+    print ("finish write table")
 def is_wake():
-    pygame.mixer.init()
-    pygame.mixer.music.load("meka_ge_mezamashi_bell_r01.mp3")
-    pygame.mixer.music.set_volume(1.0)
     while search_wk() is True:
+        pygame.mixer.init()
+        pygame.mixer.music.load("meka_ge_mezamashi_bell_r01.mp3")
+        pygame.mixer.music.set_volume(1.0)
         print("ring1")
         pygame.mixer.music.play(-1)
         time.sleep(5)
         print("ring2")
-    pygame.mixer.quit()
+        pygame.mixer.quit()
+    
     print("WAKE UP!!")
 def sleeping(created_at):
     now = datetime.now()
