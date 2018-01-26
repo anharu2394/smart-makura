@@ -4,6 +4,7 @@ import sqlite3
 import requests
 import json
 import pygame.mixer
+import vlc
 from pytz import timezone
 from datetime import datetime
 from beebotte import *
@@ -26,13 +27,9 @@ def json_data():
     response = requests.get('http://localhost:3000/users/1.json').text
     json_data = json.loads(response)
     return json_data
-def alarm_music(s,song_name,type):
-    pygame.mixer.init()
-    pygame.mixer.music.load(song_name)
-    pygame.mixer.music.set_volume(1.0)
-    pygame.mixer.music.play(type)
-    time.sleep(s)
-    pygame.mixer.quit()
+def alarm_music(song_name):
+    player = vlc.MediaPlayer(song_name)
+    player.play()
 def measure_time(s_t,pin):
     print("OK")
     end_t = time.time()
@@ -59,16 +56,15 @@ def write_finish(created_at):
     con.commit()
     print ("finish write table")
 def is_wake():
+    pygame.mixer.init()
+    pygame.mixer.music.load("meka_ge_tokei_den_aramu01.mp3")
+    pygame.mixer.music.set_volume(1.0)
     while search_wk() is True:
-        pygame.mixer.init()
-        pygame.mixer.music.load("meka_ge_tokei_den_aramu01.mp3")
-        pygame.mixer.music.set_volume(1.0)
         print("ring1")
         pygame.mixer.music.play(-1)
-        time.sleep(5)
+        time.sleep(2)
         print("ring2")
-        pygame.mixer.quit()
-    
+    pygame.mixer.quit()
     print("WAKE UP!!")
 def sleeping(created_at):
     now = datetime.now()
@@ -97,9 +93,8 @@ def sleeping(created_at):
     # Wake UP??
     is_wake()
 
-    # Wake UP!
-    alarm_music(3,"morning.mp3",1)
     write_finish(created_at)
+    alarm_music("morning.mp3")
 def search_sw(i):
     start_t = time.time()
     while num[i] == GPIO.LOW:
@@ -108,7 +103,7 @@ def search_sw(i):
             elif measure_time(start_t,i) == 2:
                 print("OVERAAA")
                 bbt.publish("smart_makura", "is_start", True)
-                alarm_music(3,"night.mp3",1)
+                alarm_music("night.mp3")
                 created_at = write_start()
                 sleeping(created_at)
                 break
