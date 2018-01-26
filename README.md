@@ -1,7 +1,7 @@
 # Smart pillow
 ## What's Smart Pillow
 This that a pillow and IoT mix.
-## funcions
+## functions
 By using my web application with Ruby on Rails5, you can set time you want to ring the alarm.
 And,you put my head on a smart pillow and sleep. At that time,The speaker rings "おやすみなさい"that means "Good night".
 After that,the alarm sounds at the set time.
