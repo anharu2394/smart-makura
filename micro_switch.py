@@ -56,7 +56,7 @@ def write_finish(created_at):
     con.commit()
 def is_wake():
     pygame.mixer.init()
-    pygame.mixer.music.load("meka_ge_mezamashi_bell_r01.mp3")
+    pygame.mixer.music.load("meka_ge_tokei_den_aramu01.mp3")
     pygame.mixer.music.set_volume(1.0)
     while search_wk() is True:
         print("ring1")
