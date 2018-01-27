@@ -57,13 +57,10 @@ def write_finish(created_at):
     con.commit()
     print ("finish write table")
 def is_wake():
-    player = vlc.MediaPlayer("meka_ge_tokei_den_aramu01.mp3")
-    player.audio_set_volume(100)
     while search_wk() is True:
+        vlc.MediaPlayer("meka_ge_tokei_den_aramu01.mp3").audio_set_volume(100).play()
         print("ring1")
-        player.play()
-        time.sleep(2)
-        print("ring2")    print("WAKE UP!!")
+    print("WAKE UP!!")
 def sleeping(created_at):
     now = datetime.now()
     json_d = json_data()
@@ -100,7 +97,6 @@ def search_sw(i):
                 break
             elif measure_time(start_t,i) == 2:
                 print("OVERAAA")
-                bbt.publish("smart_makura", "is_start", True)
                 alarm_music("night.mp3")
                 created_at = write_start()
                 sleeping(created_at)
