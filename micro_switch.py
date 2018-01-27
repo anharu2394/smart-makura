@@ -29,6 +29,7 @@ def json_data():
     return json_data
 def alarm_music(song_name):
     player = vlc.MediaPlayer(song_name)
+    player.audio_set_volume(100)
     player.play()
 def measure_time(s_t,pin):
     print("OK")
@@ -56,16 +57,13 @@ def write_finish(created_at):
     con.commit()
     print ("finish write table")
 def is_wake():
-    pygame.mixer.init()
-    pygame.mixer.music.load("meka_ge_tokei_den_aramu01.mp3")
-    pygame.mixer.music.set_volume(1.0)
+    player = vlc.MediaPlayer("meka_ge_tokei_den_aramu01.mp3")
+    player.audio_set_volume(100)
     while search_wk() is True:
         print("ring1")
-        pygame.mixer.music.play(-1)
+        player.play()
         time.sleep(2)
-        print("ring2")
-    pygame.mixer.quit()
-    print("WAKE UP!!")
+        print("ring2")    print("WAKE UP!!")
 def sleeping(created_at):
     now = datetime.now()
     json_d = json_data()
